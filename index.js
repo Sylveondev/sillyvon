@@ -31,6 +31,8 @@ const client = new Client({
 
 const tracker = new invitesTracker(client);
 
+let lastBanner = -1;
+
 client.on('ready', () => {
     console.log(`${client.user.username} is ready!`);
     client.user.setPresence({ activities: [{ name: ';help', type: `LISTENING` }, { name: 'invites', type: `WATCHING` }], status: 'dnd' });
@@ -39,28 +41,41 @@ client.on('ready', () => {
         try {
             const imagehost = await client.channels.fetch('1303174589609803887');
             const images = await imagehost.messages.fetch();
-            const pickedimage = images.at(Math.floor(Math.random() * images.size));
-            const submitter = pickedimage.mentions.users.first();
+            console.log(`Images in pool: ${images.size}`);
+            let pick = Math.floor(Math.random() * images.size);
+            while (pick == lastBanner) {
+                pick = Math.floor(Math.random() * images.size);
+            }
+            lastBanner = pick;
+            console.log(`Picked banner: ${pick}`);
+            const pickedimage = images.at(pick);
+            const submitter = await client.users.fetch(pickedimage.content).catch(() => undefined);
 
             const guild = await client.guilds.fetch('1198780918681313340');
             const channel = await guild.channels.fetch('1303168972224593952');
             const embed = new MessageEmbed()
-            .setTitle(`Banner rotation`)
+            .setTitle(`Banner rotation \` ${pick} \``)
             .setImage(pickedimage.attachments.first().url)
             .setTimestamp(new Date())
             .setFooter({
-                text: `Submitted by: ${submitter.tag} • ${submitter.id}`,
-                iconURL: submitter.displayAvatarURL({ dynamic: true, size: 512 })
+                text: `Unknown submitter`
             })
             .setColor("RANDOM");
+            
+            if (submitter) {
+                embed.setFooter({
+                    text: `Submitted by: ${submitter?.tag} • ${submitter?.id}`,
+                    iconURL: submitter.displayAvatarURL({ dynamic: true, size: 512 })
+                });
+            }
             channel.send({ embeds: [embed] });
 
             guild.setBanner(pickedimage.attachments.first().url, `Banner rotation`)
         }
         catch (err) {
-            console.warn(`Silly: Failed to change banner`, err);
+            console.warn(`Failed to change banner`, err);
         }
-    }, 3_600_000)
+    }, 36_000_000)
 
 });
 
@@ -70,8 +85,8 @@ client.on('messageCreate', async (message) => {
     if (message.guild.id == "1198780918681313340") {
         if (message.channel.id == "1303221279951949845" && message.attachments.size) {
             if (!(await extension(message.attachments.at(0).url))) return;
-            if (!await extension(message.attachments.at(0).url)) {
-                message.channel.send({ content: `${message.author}, your image isn't in the correct format. Submittions must be png, and exactly 960x540px in size.` }).then(m => setTimeout(()=>m.delete(), 5_000));
+            if (!isPng(message.attachments.at(0).url)) {
+                message.channel.send({ content: `${message.author}, your image isn't in the correct format. Submissions must be png, and exactly 960x540px in size.` }).then(m => setTimeout(()=>m.delete(), 5_000));
                 message.delete();
                 return;
             }
