@@ -70,12 +70,12 @@ client.on('ready', () => {
             }
             channel.send({ embeds: [embed] });
 
-            guild.setBanner(pickedimage.attachments.first().url, `Banner rotation`)
+            guild.setBanner(pickedimage.attachments.first().url, `[ Banner rotation ] Banner is now "ID ${pick}" by ${submitter.tag} (${submitter.id}).`)
         }
         catch (err) {
             console.warn(`Failed to change banner`, err);
         }
-    }, 36_000_000)
+    }, 3_600_000)
 
 });
 
