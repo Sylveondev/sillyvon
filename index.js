@@ -103,7 +103,11 @@ client.on('messageCreate', async (message) => {
     if (message.guild.id == "1198780918681313340") {
         
         if (command == "help") {
-            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it.\n:warning: This bot is a private bot and can only be added to whitelisted servers.\n\n## ${message.guild.name} specific commands:\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;banner\` : Creates a banner from an image`);
+            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n## ${message.guild.name} specific commands:\n* \`;ping\` : Checks if the bot is alive\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;whatbanner\` : Sends the current server's banner\n* \`;banner\` : Creates a banner from an image`);
+        }
+
+        if (command == "ping") {
+            await message.reply(`:wave: Hello there.`)
         }
 
         if (command == "pingmod") {
@@ -173,10 +177,14 @@ client.on('messageCreate', async (message) => {
                 const inviteData = await tracker.getUserData(member);
                 console.log(inviteData);
 
-                if (!inviteData.invitedBy) return message.reply(`I don't know how **${member.displayName}** joined. Try looking in <#1279334497145454663> to see if it's there.`)
+                if (!inviteData.invitedBy) return message.reply(`I don't know how **${member.displayName}** joined. I was not online when they joined, or they joined before my invite tracking was implemented.`)
                 if (inviteData.invitedBy == "vanity") return message.reply(`**${member.displayName}** joined via the vanity invite.`)
                 message.reply({ content: `**${member.displayName}** was invited by <@${inviteData.invitedBy.id}>.`, allowedMentions: { parse: [] }});
             }
+        }
+
+        if (command == "whatbanner") {
+            message.reply({ content: "Here's the current banner.", files: [message.guild.bannerURL({ format: "png" })] })
         }
 
         if (command == "banner") {
@@ -211,6 +219,11 @@ client.on('messageCreate', async (message) => {
                 message.reply('Oops, something went wrong.');
                 console.warn(`Silly: failed to generate image`, err);
             }
+        }
+    }
+    else {
+        if (command == "help") {
+            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n:no_entry_sign: **${message.guild.name}** is not setup to use Sillyvon. Please ask SylveonDev what you want Sillyvon to do.`);
         }
     }
 });
