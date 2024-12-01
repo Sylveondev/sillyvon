@@ -5,6 +5,8 @@ const express = require("express");
 
 const { createCanvas, loadImage } = require('@napi-rs/canvas')
 
+const { setTimeout: holdOff } = require('node:timers/promises');
+
 require("dotenv").config();
 
 // Module made possible with this script below.
@@ -103,7 +105,229 @@ client.on('messageCreate', async (message) => {
     if (message.guild.id == "1198780918681313340") {
         
         if (command == "help") {
-            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n## ${message.guild.name} specific commands:\n* \`;ping\` : Checks if the bot is alive\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;whatbanner\` : Sends the current server's banner\n* \`;banner\` : Creates a banner from an image`);
+            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n## ${message.guild.name} specific commands:\n### Normal commands:\n* \`;ping\` : Checks if the bot is alive\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;showbanner\` : Sends the current server's banner\n* \`;banner\` : Creates a banner from an image\n### Moderator commands:\n* \`;noreact\` : Blocks the user's ability to add reactions to messages\n* \`;noreact\` : Allows the user to add reactions to messages again\n* \`;noimages\` : Blocks the user's images perms\n* \`;yesimages\` : Blocks the user's images perms\n* \`;mute\` : Self explanatory by now\n* \`;unmute\` : Undos the mute\n* \`;shadowban\` : Hides all chats and sends the user to hell\n* \`;unshadowban\` : Allows the user to chat again`);
+        }
+
+        if (command == "noreact") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1312656051572834366')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.add("1312656051572834366", `[ Noreact by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Added \`No reactions/emojis\` to the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "yesreact") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1312656051572834366')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.remove("1312656051572834366", `[ Yesreact by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Removed \`No reactions/emojis\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "noimages") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1312656135810973756')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.add("1312656135810973756", `[ Noimages by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Added \`No image perms\` to the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "yesimages") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1312656135810973756')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.remove("1312656135810973756", `[ Yesimages by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Removed \`No image perms\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "mute") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1199750613911744563')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.add("1199750613911744563", `[ Mute by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Added \`Muted\` to the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+        if (command == "unmute") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1199750613911744563')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.remove("1199750613911744563", `[ Unmute by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Removed \`Muted\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "shadowban") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1292616999133777991')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.add("1292616999133777991", `[ Mute by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Added \`Banished\` to the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+        if (command == "unshadowban") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1292616999133777991')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.remove("1292616999133777991", `[ Unmute by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Removed \`Banished\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
         }
 
         if (command == "ping") {
@@ -146,7 +370,7 @@ client.on('messageCreate', async (message) => {
         if (command == "invites") {
             if (args[0]) {
                 const member = await message.guild.members.fetch(args[0]).catch(() => {
-                    message.reply(`Didn't find that member.`);
+                    message.reply(`No valid user id was specified.`);
                 })
                 if (!member) return;
 
@@ -170,7 +394,7 @@ client.on('messageCreate', async (message) => {
         if (command == "invited") {
             if (args[0]) {
                 const member = await message.guild.members.fetch(args[0]).catch(() => {
-                    message.reply(`Didn't find that member.`);
+                    message.reply(`No valid user id was specified.`);
                 })
                 if (!member) return;
 
@@ -183,8 +407,8 @@ client.on('messageCreate', async (message) => {
             }
         }
 
-        if (command == "whatbanner") {
-            message.reply({ content: "Here's the current banner.", files: [message.guild.bannerURL({ format: "png" })] })
+        if (command == "showbanner") {
+            message.reply({ content: "Here's the current banner.", files: [message.guild.bannerURL({ format: "png", size: 4096 })] })
         }
 
         if (command == "banner") {
