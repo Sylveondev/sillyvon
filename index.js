@@ -105,7 +105,7 @@ client.on('messageCreate', async (message) => {
     if (message.guild.id == "1198780918681313340") {
         
         if (command == "help") {
-            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n## ${message.guild.name} specific commands:\n### Normal commands:\n* \`;ping\` : Checks if the bot is alive\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;showbanner\` : Sends the current server's banner\n* \`;banner\` : Creates a banner from an image\n### Moderator commands:\n* \`;noreact\` : Blocks the user's ability to add reactions to messages\n* \`;yesreact\` : Allows the user to add reactions to messages again\n* \`;noimages\` : Blocks the user's images perms\n* \`;yesimages\` : Blocks the user's images perms\n* \`;mute\` : Self explanatory by now\n* \`;unmute\` : Undos the mute\n* \`;shadowban\` : Hides all chats and sends the user to hell\n* \`;unshadowban\` : Allows the user to chat again`);
+            await message.reply(`:wave: Hi there, I'm Sillyvon. I'm a bot designed by SylveonDev for some a very specific few servers that require it. Note: This bot is a private bot and can only be added to specific servers.\n## ${message.guild.name} specific commands:\n### Normal commands:\n* \`;ping\` : Checks if the bot is alive\n* \`;staff\` : Lists the server staff\n* \`;pingmod\` : Pings a random mod for help\n* \`;invites\` : Shows a member's invite stats\n* \`;invited\` : Guesses who invited a member\n* \`;showbanner\` : Sends the current server's banner\n* \`;banner\` : Creates a banner from an image\n### Moderator commands:\n* \`;noreact\` : Blocks the user's ability to add reactions to messages\n* \`;yesreact\` : Allows the user to add reactions to messages again\n* \`;noimages\` : Blocks the user's images perms\n* \`;yesimages\` : Blocks the user's images perms\n* \`;mute\` : Self explanatory by now\n* \`;unmute\` : Undos the mute\n* \`;shadowban\` : Hides all chats and sends the user to hell\n* \`;unshadowban\` : Allows the user to chat again\n* \`;partner\` : Fixes the partner role for a user if they're missing it\n* \`;unpartner\` : Removes the partner role from a user`);
         }
 
         if (command == "noreact") {
@@ -151,7 +151,7 @@ client.on('messageCreate', async (message) => {
                         stopcount = true;
                         continue;
                     }
-                    if (!mem.roles.cache.has('1312656051572834366')) members.push(mem);
+                    if (mem.roles.cache.has('1312656051572834366')) members.push(mem);
                     holdOff(250)
                 }
             }
@@ -207,7 +207,7 @@ client.on('messageCreate', async (message) => {
                         stopcount = true;
                         continue;
                     }
-                    if (!mem.roles.cache.has('1312656135810973756')) members.push(mem);
+                    if (mem.roles.cache.has('1312656135810973756')) members.push(mem);
                     holdOff(250)
                 }
             }
@@ -262,7 +262,7 @@ client.on('messageCreate', async (message) => {
                         stopcount = true;
                         continue;
                     }
-                    if (!mem.roles.cache.has('1199750613911744563')) members.push(mem);
+                    if (mem.roles.cache.has('1199750613911744563')) members.push(mem);
                     holdOff(250)
                 }
             }
@@ -317,7 +317,7 @@ client.on('messageCreate', async (message) => {
                         stopcount = true;
                         continue;
                     }
-                    if (!mem.roles.cache.has('1292616999133777991')) members.push(mem);
+                    if (mem.roles.cache.has('1292616999133777991')) members.push(mem);
                     holdOff(250)
                 }
             }
@@ -328,6 +328,61 @@ client.on('messageCreate', async (message) => {
                 holdOff(500);
             }
             message.reply(`Removed \`Banished\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+
+        if (command == "partner") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (!mem.roles.cache.has('1312684198167052370')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.add("1312684198167052370", `[ Partner by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Added \`Partners\` to the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
+        }
+        if (command == "unpartner") {
+            if (!message.member.roles.cache.has("1222295580123074591")) return message.reply(`You are missing the \`Moderator\` role needed to run this command.`);
+            const members = [];
+            let stopcount = false;
+            for (let i = 0; i < args.length; i++) {
+                if (stopcount == false) {
+                    if (isNaN(args[i])) {
+                        stopcount = true;
+                        continue;
+                    }
+                    const mem = await message.guild.members.fetch(args[i]).catch(() => undefined);
+                    if (!mem) {
+                        stopcount = true;
+                        continue;
+                    }
+                    if (mem.roles.cache.has('1312684198167052370')) members.push(mem);
+                    holdOff(250)
+                }
+            }
+            const reason = args.filter(r => args.indexOf(r) >= members.length).join(" ");
+            if (members.length == 0) return message.reply(`No role assignment has occured.`);
+            for (let i = 0; i < members.length; i++) {
+                await members.at(i).roles.remove("1312684198167052370", `[ Unpartner by ${message.author.tag} ] ${reason}`).catch(() => undefined);
+                holdOff(500);
+            }
+            message.reply(`Removed \`Partners\` from the following members:\n${members.map(m => `**${m.user.username}**#${m.user.discriminator}`).join(", ")}`);
         }
 
         if (command == "ping") {
