@@ -8,12 +8,13 @@ Sillyvon uses a customizable per server config. This allows you to add commands 
 Since Sillyvon is a private bot, I won't provide support on how to get it working in your own server. However, all you need is **Nodejs** to run this bot. Everything you need can be modified in the `index.js` file.
 
 1. Clone this repository
-2. Create a `.env` file and add these lines to it. Fill in the blanks with your bot token and the prefix you want to use.
+2. Rename `index.example.js` to `index.js`
+3. Create a `.env` file and add these lines to it. Fill in the blanks with your bot token and the prefix you want to use.
 ```
 TOKEN=
 prefix=
 ```
-3. Install dependencies with `npm i` and run the bot with `node index.js`
+4. Install dependencies with `npm i` and run the bot with `node index.js`
 
 # Screenshots
 Below are examples of Sillyvon being used in my server. If you want to use my server's config as a template, you can find it in the `index.js` file.<br><br>

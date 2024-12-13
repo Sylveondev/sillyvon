@@ -11,11 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.59",
-    "better-sqlite3": "^11.2.1",
+    "better-sqlite3": "^11.7.0",
     "discord-invites-tracker-sqlite": "github:Alexmdz77/discord-invites-tracker-sqlite",
     "discord.js": "^13.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "quick.db": "^9.1.7",
     "sillyvon": "file:"
   }
 }

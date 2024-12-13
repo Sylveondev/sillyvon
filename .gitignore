@@ -1,4 +1,4 @@
 node_modules
 .env
-invites.sqlite
-settings.sqlite
+*.sqlite
+bot.js
